@@ -14,22 +14,29 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.game.minigame;
+package com.exorath.simpleapi.api.hub;
 
+import com.exorath.simpleapi.api.GameHubProvider;
+import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
-import com.exorath.simpleapi.api.game.Game;
+import com.exorath.simpleapi.api.events.EventsManager;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 
 /**
+ * The API can register up to one Game. It must be registered through a {@link GameHubProvider}.
  * Created by Toon Sevrin on 5/15/2016.
  */
-public abstract class Minigame extends Game {
-    public static String GAME_SERVERS_PREFIX = "gameservers.";
+public abstract class Hub extends PrimaryModule {
+    private World world;
 
-    /**
-     * Gets the redis channel where games of this GameHubProvider publish their status to
-     * @return the redis channel where games of this GameHubProvider publish their status to, or null if no GameHubProvider registered.
-     */
-    public static String getRedisGameDiscoveryChannel(){
-        return SimpleAPI.getInstance().getGameHubProvider() == null ? null : GAME_SERVERS_PREFIX + SimpleAPI.getInstance().getGameHubProvider().getID();
+    public Hub(String worldName){
+        world = Bukkit.createWorld(WorldCreator.name(worldName));
+        SimpleAPI.getInstance().getManager(EventsManager.class).protectWorld(world);
+    }
+
+    public Hub(){
+        this("world");
     }
 }

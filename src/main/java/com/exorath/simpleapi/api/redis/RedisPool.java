@@ -14,13 +14,25 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.module;
+package com.exorath.simpleapi.api.redis;
 
-import com.exorath.simpleapi.api.lib.Destroyable;
+import redis.clients.jedis.Jedis;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * The redis pool is responsible for making connections with Redis.
+ * Created by Toon Sevrin on 5/17/2016.
  */
-public interface Module extends Destroyable{
+public interface RedisPool {
 
+    /**
+     * True if the jedis pool is enabled (false if redis is not enabled or could not be found)
+     * @return true if the jedis pool is enabled
+     */
+    boolean isEnabled();
+
+    /**
+     * Gets a Jedis resource from the redis pool, or null if pool is not enabled.
+     * @return a Jedis resource from the redis pool, or null if pool is not enabled
+     */
+    Jedis getResource();
 }

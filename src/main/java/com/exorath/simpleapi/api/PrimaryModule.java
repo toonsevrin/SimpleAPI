@@ -14,13 +14,15 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.module;
+package com.exorath.simpleapi.api;
 
-import com.exorath.simpleapi.api.lib.Destroyable;
+
+import com.exorath.simpleapi.api.module.Module;
 
 /**
+ * Every GameAPI instance can have up to one primaryModule. This module is extended by Game and Hub.
  * Created by Toon Sevrin on 5/15/2016.
  */
-public interface Module extends Destroyable{
+public abstract class PrimaryModule implements Module{
 
 }

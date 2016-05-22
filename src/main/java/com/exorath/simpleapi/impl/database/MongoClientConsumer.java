@@ -14,13 +14,13 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.module;
+package com.exorath.simpleapi.impl.database;
 
-import com.exorath.simpleapi.api.lib.Destroyable;
+import com.mongodb.MongoClient;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 2/24/2016.
  */
-public interface Module extends Destroyable{
-
+public interface MongoClientConsumer {
+     void consume(MongoClient client);
 }

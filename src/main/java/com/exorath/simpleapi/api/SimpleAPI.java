@@ -1,11 +1,27 @@
+/*
+ *    Copyright 2016 Exorath
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.exorath.simpleapi.api;
 
 import com.exorath.simpleapi.api.game.Game;
+import com.exorath.simpleapi.api.hub.Hub;
 import com.exorath.simpleapi.api.manager.Manager;
 import com.exorath.simpleapi.api.module.Module;
-import com.exorath.simpleapi.api.player.GamePlayer;
 
-import java.util.Collection;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,6 +34,17 @@ public interface SimpleAPI {
      */
     Game getGame();
     /**
+     * Returns the registered hub, or null if no game has been registered
+     * @return the registered hub
+     */
+    Hub getHub();
+
+    /**
+     * Returns the automatically registered {@link GameHubProvider}, or null if no {@link GameHubProvider} was registered.
+     * @return the registered {@link GameHubProvider}, or null if no {@link GameHubProvider} was registered
+     */
+    GameHubProvider getGameHubProvider();
+    /**
      * Gets a list of all registered Managers.
      *
      * @return the list of registered managers
@@ -25,7 +52,7 @@ public interface SimpleAPI {
     List<Manager> getManagers();
 
     /**
-     * Adds a manager to the list of managers.
+     * Adds a manager to the list of managers, or does nothing if a manager with provided manager class was already added.
      *
      * @param manager the manager to be added
      */
@@ -48,7 +75,8 @@ public interface SimpleAPI {
     <T extends Manager> T getManager(Class<T> clazz);
 
     /**
-     * Adds a modules to the list of modules. Note that this is done automatically if a JavaPlugin implements ModuleProvider.
+     * Adds a modules to the list of modules, or does nothing if a module with provided module class was already added.
+     * Note that this is done automatically if a JavaPlugin implements ModuleProvider.
      *
      * @param module the module to be added
      */
@@ -63,13 +91,18 @@ public interface SimpleAPI {
      */
     <T extends Module> T getModule(Class<T> clazz);
 
-    /**
-     * Gets a collection of all online {@link GamePlayer}s. These players may or may not be playing the game.
-     *
-     * @return a set of all online {@link GamePlayer}s.
-     */
-     Collection<GamePlayer> getOnlinePlayers();
 
+    /**
+     * Adds a runnable to the GameAPI that will surely be executed on disable. Useful for closing sockets.
+     * @param runnable runnable that will be executed on disable
+     */
+    void addOnDisable(Runnable runnable);
+
+    /**
+     * Gets the plugin folder of the GameAPI, useful for reading config files.
+     * @return the plugin folder of the GameAPI
+     */
+    File getDataFolder();
     /**
      * Logs a message with [SimpleAPI] [INFO] prefix to the console
      * @param message message to log

@@ -14,13 +14,15 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.module;
+package com.exorath.simpleapi.api.hub.serverlist;
 
-import com.exorath.simpleapi.api.lib.Destroyable;
+import java.util.Collection;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * The ServerListManager is responsible for listing the available game servers that serverlist to this hub.
+ * Created by Toon Sevrin on 5/17/2016.
  */
-public interface Module extends Destroyable{
+public interface ServerListManager {
+    Collection<GameServer> getGameServers();
 
 }
