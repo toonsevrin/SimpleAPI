@@ -16,6 +16,7 @@
 
 package com.exorath.simpleapi.impl.player;
 
+import com.exorath.simpleapi.api.player.GamePlayer;
 import com.exorath.simpleapi.api.player.SerializedPlayer;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -34,19 +35,25 @@ public class SerializedPlayerImpl implements SerializedPlayer {
         this.name = name;
         this.uniqueId = uniqueId;
     }
-
-    @Override
-    public String serialize() {
+    public JsonObject serializeToJson(){
         JsonObject object = new JsonObject();
         object.addProperty("name", name);
         object.addProperty("uuid", uniqueId.toString());
-        return object.toString();
+        return object;
+    }
+    @Override
+    public String serialize() {
+        return serializeToJson().toString();
     }
 
     public static SerializedPlayer deserialize(String message){
         JsonObject obj = new JsonParser().parse(message).getAsJsonObject();
         return new SerializedPlayerImpl(obj.get("name").getAsString(), UUID.fromString(obj.get("uuid").getAsString()));
     }
+    public static SerializedPlayer deserialize(GamePlayer player){
+        return new SerializedPlayerImpl(player.bukkit().getName(), player.getUUID());
+    }
+
 
 
     @Override

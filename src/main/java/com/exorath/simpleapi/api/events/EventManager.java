@@ -26,7 +26,7 @@ import org.bukkit.event.HandlerList;
  * Manager that handles world events and other event handling.
  * Created by Toon Sevrin on 5/15/2016.
  */
-public interface EventsManager extends Manager {
+public interface EventManager extends Manager {
     /**
      * Cancels following events on {@link org.bukkit.event.EventPriority#LOWEST} within the world: BlockBreakEvent.class, BlockPlaceEvent.class, BlockBurnEvent.class, BlockDamageEvent.class, BlockDispenseEvent.class,BlockFadeEvent.class, BlockFormEvent.class, BlockFromToEvent.class, BlockGrowEvent.class, BlockIgniteEvent.class, BlockPhysicsEvent.class, BlockPistonEvent.class,BlockSpreadEvent.class, EntityBlockFormEvent.class, LeavesDecayEvent.class, SignChangeEvent.class, EntityBreakDoorEvent.class, EntityChangeBlockEvent.class, EntityCreatePortalEvent.class
      *

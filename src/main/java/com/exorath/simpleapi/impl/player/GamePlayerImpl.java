@@ -46,8 +46,8 @@ public class GamePlayerImpl implements GamePlayer {
         uuid = id;
 
         publicDBData = new DBDataImpl(SimpleAPIImpl.getInstance(), "players", id.toString(), true);
-        if (SimpleAPI.getInstance().getGame() != null)
-            gameDBData = new DBDataImpl(SimpleAPI.getInstance().getGameProvider(), "players", id.toString(), true);
+        if (SimpleAPI.getInstance().getGameHubProvider() != null)
+            gameDBData = new DBDataImpl(SimpleAPI.getInstance().getGameHubProvider(), "players", id.toString(), true);
     }
 
     @Override

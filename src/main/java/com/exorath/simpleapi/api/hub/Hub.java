@@ -19,7 +19,8 @@ package com.exorath.simpleapi.api.hub;
 import com.exorath.simpleapi.api.GameHubProvider;
 import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
-import com.exorath.simpleapi.api.events.EventsManager;
+import com.exorath.simpleapi.api.events.EventManager;
+import com.exorath.simpleapi.impl.hub.serverlist.ServerListManagerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -33,7 +34,9 @@ public abstract class Hub extends PrimaryModule {
 
     public Hub(String worldName){
         world = Bukkit.createWorld(WorldCreator.name(worldName));
-        SimpleAPI.getInstance().getManager(EventsManager.class).protectWorld(world);
+        SimpleAPI.getInstance().getManager(EventManager.class).protectWorld(world);
+
+        SimpleAPI.getInstance().addManager(new ServerListManagerImpl());
     }
 
     public Hub(){

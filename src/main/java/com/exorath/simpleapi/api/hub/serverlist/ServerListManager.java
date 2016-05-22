@@ -16,13 +16,19 @@
 
 package com.exorath.simpleapi.api.hub.serverlist;
 
+import com.exorath.simpleapi.api.manager.Manager;
+
 import java.util.Collection;
 
 /**
  * The ServerListManager is responsible for listing the available game servers that serverlist to this hub.
  * Created by Toon Sevrin on 5/17/2016.
  */
-public interface ServerListManager {
+public interface ServerListManager extends Manager {
+    /**
+     * Gets a list of all registered gameServers with this hub's GameID
+     * @return a list of all registered gameServers with this hub's GameID
+     */
     Collection<GameServer> getGameServers();
 
 }

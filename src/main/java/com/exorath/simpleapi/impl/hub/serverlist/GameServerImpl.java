@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.impl.hub;
+package com.exorath.simpleapi.impl.hub.serverlist;
 
 import com.exorath.simpleapi.api.hub.serverlist.GameServer;
 import com.exorath.simpleapi.api.player.SerializedPlayer;
@@ -40,33 +40,43 @@ import java.util.*;
  */
 public class GameServerImpl implements GameServer{
     private String bungeeName;
-    private boolean joinable;
-    private boolean playable;
-    private int maxPlayerAmount;
+    private boolean joinable = false;
+    private boolean playable = false;
+    private int maxPlayerAmount = 0;
     private Set<SerializedPlayer> players = new HashSet<>();
     private List<String> extraLore = new ArrayList<>();
 
-    public GameServerImpl(String bungeeName, boolean joinable, boolean playable, int maxPlayerAmount, int playerAmount){
+    public GameServerImpl(String bungeeName){
         this.bungeeName = bungeeName;
+    }
+
+    public GameServerImpl(String bungeeName, boolean joinable, boolean playable, int maxPlayerAmount){
+        this(bungeeName);
         this.joinable = joinable;
         this.playable = playable;
         this.maxPlayerAmount = maxPlayerAmount;
     }
-    public static GameServer deserialize(String message){
-        JsonObject object = new JsonParser().parse(message).getAsJsonObject();
+    public static boolean canDeserialize(JsonObject object){
+        return object.has("bungee");
+    }
+    public static GameServer deserialize(JsonObject object){
+        GameServerImpl gameServer = new GameServerImpl(object.get("bungee").getAsString());
+
+        if(object.has("joinable"))
+            gameServer.setJoinable(object.get("joinable").getAsBoolean());
+        if(object.has("playable"))
+            gameServer.setPlayable(object.get("playable").getAsBoolean());
+        if(object.has("maxplayers"))
+            gameServer.setMaxPlayerAmount(object.get("maxplayers").getAsInt());
 
         JsonArray players = object.has("players") ? object.get("players").getAsJsonArray() : new JsonArray();
-        JsonArray extraLore = object.has("extra") ? object.get("extra").getAsJsonArray() : new JsonArray();
-
-        GameServer gameServer = new GameServerImpl(object.get("bungee").getAsString(), object.get("joinable").getAsBoolean(), object.get("playable").getAsBoolean(), object.get("maxplayers").getAsInt(), players.size());
         players.forEach(e -> gameServer.getPlayers().add(SerializedPlayerImpl.deserialize(e.getAsJsonObject().toString())));
+        JsonArray extraLore = object.has("extra") ? object.get("extra").getAsJsonArray() : new JsonArray();
         extraLore.forEach(e -> gameServer.getExtraLore().add(e.getAsString()));
 
         return gameServer;
     }
-
-    @Override
-    public String serialize() {
+    public JsonObject serializeToJson(){
         JsonObject object = new JsonObject();
 
         object.addProperty("bungee", getBungeeName());
@@ -78,8 +88,23 @@ public class GameServerImpl implements GameServer{
         players.forEach(p -> playersArray.add(new JsonParser().parse(p.serialize())));
         JsonArray extraLoreArray = new JsonArray();
         extraLore.forEach(line -> extraLoreArray.add(new JsonPrimitive(line)));
+        return object;
+    }
+    @Override
+    public String serialize() {
+        return serializeToJson().toString();
+    }
 
-        return object.toString();
+    public void setJoinable(boolean joinable) {
+        this.joinable = joinable;
+    }
+
+    public void setPlayable(boolean playable) {
+        this.playable = playable;
+    }
+
+    public void setMaxPlayerAmount(int maxPlayerAmount) {
+        this.maxPlayerAmount = maxPlayerAmount;
     }
 
     @Override

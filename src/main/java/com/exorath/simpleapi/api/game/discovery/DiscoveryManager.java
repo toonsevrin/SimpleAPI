@@ -14,18 +14,16 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api;
+package com.exorath.simpleapi.api.game.discovery;
 
+import com.exorath.simpleapi.api.manager.Manager;
 
-import com.exorath.simpleapi.api.module.Module;
+import java.util.List;
 
 /**
- * Every GameAPI instance can have up to one primaryModule. This module is extended by Game and Hub.
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 5/22/2016.
  */
-public abstract class PrimaryModule implements Module{
-    public PrimaryModule(){
-        
-    }
-
+public interface DiscoveryManager extends Manager{
+    void sendGameDiscoveryMessage();
+    List<String> getExtraLore();
 }

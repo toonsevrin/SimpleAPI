@@ -23,6 +23,7 @@ import com.exorath.simpleapi.api.hub.Hub;
 import com.exorath.simpleapi.api.manager.Manager;
 import com.exorath.simpleapi.api.module.Module;
 import com.exorath.simpleapi.impl.database.DBManager;
+import com.exorath.simpleapi.impl.events.EventManagerImpl;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,6 +46,7 @@ public class SimpleAPIImpl extends JavaPlugin implements SimpleAPI {
     public void onEnable() {
         instance = this;
         addManager(new DBManager("mongodb"));
+        addManager(new EventManagerImpl());
     }
 
     @Override
@@ -54,12 +56,18 @@ public class SimpleAPIImpl extends JavaPlugin implements SimpleAPI {
         if(game != null)
             game.destroy();
     }
+    //TODO: Implement this
+    @Override
+    public String getBungeeId() {
+        return null;
+    }
 
     @Override
     public Game getGame() {
         return game;
     }
 
+    //TODO: Implement this
     @Override
     public Hub getHub() {
         return null;

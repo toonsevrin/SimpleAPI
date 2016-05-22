@@ -16,7 +16,7 @@
 
 package com.exorath.simpleapi.impl.events;
 
-import com.exorath.simpleapi.api.events.EventsManager;
+import com.exorath.simpleapi.api.events.EventManager;
 import com.exorath.simpleapi.api.manager.Manager;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ import org.bukkit.event.HandlerList;
  * The events manager disables all world modifying events within it's worlds list.
  * Created by Toon Sevrin on 5/15/2016.
  */
-public class EventManagerImpl implements Manager, EventsManager{
+public class EventManagerImpl implements Manager, EventManager {
     private WorldProtection worldProtection = new WorldProtection();
     private EventProtection eventProtection = new EventProtection();
 

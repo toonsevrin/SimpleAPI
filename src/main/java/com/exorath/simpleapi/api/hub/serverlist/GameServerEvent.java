@@ -14,18 +14,15 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api;
-
-
-import com.exorath.simpleapi.api.module.Module;
+package com.exorath.simpleapi.api.hub.serverlist;
 
 /**
- * Every GameAPI instance can have up to one primaryModule. This module is extended by Game and Hub.
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 5/22/2016.
  */
-public abstract class PrimaryModule implements Module{
-    public PrimaryModule(){
-        
-    }
-
+public interface GameServerEvent {
+    /**
+     * Gets the GameServer this event applies to.
+     * @return the GameServer this event applies to
+     */
+    GameServer getGameServer();
 }

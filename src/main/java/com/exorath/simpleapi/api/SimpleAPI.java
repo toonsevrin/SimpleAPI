@@ -28,6 +28,13 @@ import java.util.List;
  * Created by Toon Sevrin on 5/15/2016.
  */
 public interface SimpleAPI {
+
+    /**
+     * Returns the BungeeCord ID of this server. This is loaded once onEnable, if the BungeeCord name changes after that, it may break certain features.
+     * @return the BungeeCord ID of this server
+     */
+    String getBungeeId();
+
     /**
      * Returns the registered game, or null if no game has been registered
      * @return the registered game
