@@ -14,24 +14,24 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.game.minigame;
-
-import com.exorath.simpleapi.api.game.Game;
-import com.exorath.simpleapi.api.player.GamePlayer;
-
-import java.util.Collection;
+package com.exorath.simpleapi.api.hologram;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 5/27/2016.
  */
-public abstract class Minigame extends Game {
+public enum TouchAction {
+    RIGHT_CLICK(de.inventivegames.hologram.touch.TouchAction.RIGHT_CLICK),
+    LEFT_CLICK(de.inventivegames.hologram.touch.TouchAction.LEFT_CLICK),
+    UNKNOWN(de.inventivegames.hologram.touch.TouchAction.UNKNOWN);
 
-    public Minigame(String gameName){
-        super(gameName);
+    private de.inventivegames.hologram.touch.TouchAction action;
+
+    TouchAction(de.inventivegames.hologram.touch.TouchAction action){
+        this.action = action;
     }
 
-    @Override
-    public Collection<GamePlayer> getPlayers() {
-        return null;
+    protected de.inventivegames.hologram.touch.TouchAction getAction() {
+        return action;
     }
+
 }

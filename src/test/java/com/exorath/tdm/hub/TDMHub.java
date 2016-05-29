@@ -14,24 +14,20 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.game.minigame;
+package com.exorath.tdm.hub;
 
-import com.exorath.simpleapi.api.game.Game;
-import com.exorath.simpleapi.api.player.GamePlayer;
-
-import java.util.Collection;
+import com.exorath.simpleapi.api.hub.Hub;
+import de.inventivegames.hologram.HologramAPI;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * The hub is a server which primarily allows the players to connect to game servers.
+ * It may also used for things like kit unlocking and selection, displaying leaderboards, stat upgrading, how-to-play guiding...
+ *
+ * GameServer discovery is done automatically.
+ * 
+ * Created by Toon Sevrin on 5/25/2016.
  */
-public abstract class Minigame extends Game {
-
-    public Minigame(String gameName){
-        super(gameName);
-    }
-
-    @Override
-    public Collection<GamePlayer> getPlayers() {
-        return null;
+public class TDMHub extends Hub {
+    public TDMHub(){
     }
 }

@@ -14,24 +14,19 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.game.minigame;
+package com.exorath.simpleapi.api.hologram;
 
-import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.player.GamePlayer;
 
-import java.util.Collection;
-
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 5/27/2016.
  */
-public abstract class Minigame extends Game {
-
-    public Minigame(String gameName){
-        super(gameName);
-    }
-
-    @Override
-    public Collection<GamePlayer> getPlayers() {
-        return null;
-    }
+public interface TouchHandler {
+    /**
+     * Called when a hologram is touched (clicked on) by a GamePlayer.
+     * @param hologram hologram that got clicked on
+     * @param player player who clicked the hologram
+     * @param action click type
+     */
+    void onTouch(Hologram hologram, GamePlayer player, TouchAction action);
 }

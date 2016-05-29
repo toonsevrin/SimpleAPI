@@ -14,24 +14,16 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.game.minigame;
+package com.exorath.tdm.game;
 
-import com.exorath.simpleapi.api.game.Game;
-import com.exorath.simpleapi.api.player.GamePlayer;
-
-import java.util.Collection;
+import com.exorath.simpleapi.api.game.minigame.Minigame;
 
 /**
- * Created by Toon Sevrin on 5/15/2016.
+ * Created by Toon Sevrin on 5/25/2016.
  */
-public abstract class Minigame extends Game {
-
-    public Minigame(String gameName){
-        super(gameName);
+public class TDMGame extends Minigame {
+    public TDMGame(){
+        super("Team Deathmatch");
     }
 
-    @Override
-    public Collection<GamePlayer> getPlayers() {
-        return null;
-    }
 }

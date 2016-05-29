@@ -16,6 +16,7 @@
 
 package com.exorath.simpleapi.impl.hub.serverlist;
 
+import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.game.minigame.Minigame;
 import com.exorath.simpleapi.api.hub.serverlist.GameServer;
 import com.exorath.simpleapi.api.hub.serverlist.GameServerAddedEvent;
@@ -41,7 +42,7 @@ public class ServerListManagerImpl extends RedisSubscriber implements ServerList
 
 
     public ServerListManagerImpl() {
-        super(Minigame.getRedisGameDiscoveryChannel());
+        super(Game.getRedisGameDiscoveryChannel());
     }
 
     @Override

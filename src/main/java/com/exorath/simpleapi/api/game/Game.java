@@ -19,12 +19,10 @@ package com.exorath.simpleapi.api.game;
 import com.exorath.simpleapi.api.GameHubProvider;
 import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
-import com.exorath.simpleapi.api.game.discovery.DiscoveryManager;
-import com.exorath.simpleapi.api.lib.Destroyable;
-import com.exorath.simpleapi.api.module.Module;
 import com.exorath.simpleapi.api.player.GamePlayer;
 import com.exorath.simpleapi.api.properties.Properties;
 import com.exorath.simpleapi.impl.game.DiscoveryManagerImpl;
+import com.exorath.simpleapi.impl.properties.PropertiesImpl;
 import org.bukkit.Bukkit;
 
 import java.util.Collection;
@@ -34,8 +32,22 @@ import java.util.Collection;
  * Created by Toon Sevrin on 5/15/2016.
  */
 public abstract class Game extends PrimaryModule {
-    public Game(){
+    public static String GAME_SERVERS_PREFIX = "gameservers.";
+
+    private String gameName;
+    private Properties properties = new PropertiesImpl();
+
+    public Game(String gameName){
+        this.gameName = gameName;
         SimpleAPI.getInstance().addManager(new DiscoveryManagerImpl(this));
+    }
+
+    /**
+     * Gets the redis channel where games of this GameHubProvider publish their status to
+     * @return the redis channel where games of this GameHubProvider publish their status to, or null if no GameHubProvider registered.
+     */
+    public static String getRedisGameDiscoveryChannel(){
+        return SimpleAPI.getInstance().getGameHubProvider() == null ? null : GAME_SERVERS_PREFIX + SimpleAPI.getInstance().getGameHubProvider().getID();
     }
 
     /**
@@ -43,7 +55,9 @@ public abstract class Game extends PrimaryModule {
      *
      * @return The properties.
      */
-    public abstract Properties getProperties();
+    public Properties getProperties(){
+        return properties;
+    }
 
     /**
      * True if this game can be joined (Regardless whether or not you will be playing after joining).
@@ -77,14 +91,18 @@ public abstract class Game extends PrimaryModule {
     /**
      * Gets this Game's name. This may be used for display purposes.
      *
-     * @return The name.
+     * @return the name
      */
-    public abstract String getName();
+    public String getName(){
+        return gameName;
+    }
 
     /**
      * Sets this Game's name. This may be used for display purposes.
      *
-     * @param name The new name.
+     * @param gameName the new name
      */
-    public abstract void setName(String name);
+    public void setName(String gameName){
+        this.gameName = gameName;
+    }
 }

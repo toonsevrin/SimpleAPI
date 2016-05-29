@@ -17,7 +17,6 @@
 package com.exorath.simpleapi.api.npc;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
 /**
@@ -61,9 +60,9 @@ public interface EntityNPC extends NPC {
 
     /**
      * Sets whether or not this entity should have collision
-     * @param flag whether or not this entity should have collision
+     * @param collision whether or not this entity should have collision
      */
-    void setCollision(boolean flag);
+    void setCollision(boolean collision);
 
     /**
      * Sets the pitch of this entity, measured in degrees.
@@ -99,9 +98,9 @@ public interface EntityNPC extends NPC {
 
     /**
      * Sets whether or not this entity should be frozen in place
-     * @param flag whether or not this entity should be frozen in place
+     * @param frozen whether or not this entity should be frozen in place
      */
-    void setFrozen(boolean flag);
+    void setFrozen(boolean frozen);
 
     /**
      * True if this entity cannot be damaged

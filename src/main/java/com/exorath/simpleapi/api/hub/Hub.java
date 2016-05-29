@@ -20,10 +20,15 @@ import com.exorath.simpleapi.api.GameHubProvider;
 import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
 import com.exorath.simpleapi.api.events.EventManager;
+import com.exorath.simpleapi.impl.hub.serverdisplay.ServerDisplayManagerImpl;
 import com.exorath.simpleapi.impl.hub.serverlist.ServerListManagerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+
 
 /**
  * The API can register up to one Game. It must be registered through a {@link GameHubProvider}.
@@ -31,15 +36,29 @@ import org.bukkit.WorldCreator;
  */
 public abstract class Hub extends PrimaryModule {
     private World world;
-
-    public Hub(String worldName){
-        world = Bukkit.createWorld(WorldCreator.name(worldName));
-        SimpleAPI.getInstance().getManager(EventManager.class).protectWorld(world);
-
-        SimpleAPI.getInstance().addManager(new ServerListManagerImpl());
-    }
+    private YamlConfiguration worldConfig;
 
     public Hub(){
         this("world");
+    }
+
+    public Hub(String worldName){
+        loadWorld(worldName);
+        SimpleAPI.getInstance().getManager(EventManager.class).protectWorld(world);
+
+        SimpleAPI.getInstance().addManager(new ServerListManagerImpl());
+        SimpleAPI.getInstance().addManager(new ServerDisplayManagerImpl(this));
+    }
+    private void loadWorld(String worldName){
+        world = Bukkit.createWorld(WorldCreator.name(worldName));
+        worldConfig = YamlConfiguration.loadConfiguration(new File(world.getWorldFolder(), "exorath.yml"));
+    }
+
+    public World getHubWorld() {
+        return world;
+    }
+
+    public YamlConfiguration getWorldConfiguration(){
+        return worldConfig;
     }
 }
