@@ -17,7 +17,12 @@
 package com.exorath.tdm.hub;
 
 import com.exorath.simpleapi.api.hub.Hub;
-import de.inventivegames.hologram.HologramAPI;
+import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.hub.serverlist.GameServerFilter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The hub is a server which primarily allows the players to connect to game servers.
@@ -29,5 +34,37 @@ import de.inventivegames.hologram.HologramAPI;
  */
 public class TDMHub extends Hub {
     public TDMHub(){
+        addFilters();
+    }
+
+    //These filters can be used to filter servers, specifically for join game signs.
+    private void addFilters(){
+        addFilter("ffa", new GameServerFilter(){
+            @Override
+            public boolean allowed(GameServer server) {
+                return server.getExtraLore().stream().filter(l -> l.toLowerCase().contains("freeforall")).findFirst().isPresent();
+            }
+
+            @Override
+            public Collection<GameServer> filter(Collection<GameServer> servers) {
+                List<GameServer> filtered = new ArrayList<>();
+                servers.stream().filter(server -> allowed(server)).forEach(server -> filtered.add(server));
+                return filtered;
+            }
+        });
+
+        addFilter("tdm", new GameServerFilter(){
+            @Override
+            public boolean allowed(GameServer server) {
+                return server.getExtraLore().stream().filter(l -> l.toLowerCase().contains("tdm")).findFirst().isPresent();
+            }
+
+            @Override
+            public Collection<GameServer> filter(Collection<GameServer> servers) {
+                List<GameServer> filtered = new ArrayList<>();
+                servers.stream().filter(server -> allowed(server)).forEach(server -> filtered.add(server));
+                return filtered;
+            }
+        });
     }
 }

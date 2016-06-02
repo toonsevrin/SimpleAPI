@@ -16,13 +16,16 @@
 
 package com.exorath.simpleapi.impl.hub.serverdisplay;
 
+import com.exorath.simpleapi.api.SimpleAPI;
 import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplay;
 import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.player.GamePlayer;
 import com.sun.javafx.binding.StringFormatter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.event.block.Action;
 
 import java.util.HashMap;
 
@@ -49,6 +52,15 @@ public class SignDisplay implements ServerDisplay {
         this.location = location;
         this.filterId = filterId;
         this.type = type == null ? "Default" : type;
+    }
+
+    public void clicked(GamePlayer player, Action action){
+        for(GameServer server : servers.values()){
+            if(server.isPlayable() && server.isJoinable()) {
+                SimpleAPI.connect(player, server.getBungeeName());
+                return;
+            }
+        }
     }
 
     private boolean isEnabled() {

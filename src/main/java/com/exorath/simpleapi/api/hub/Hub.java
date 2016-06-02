@@ -20,6 +20,9 @@ import com.exorath.simpleapi.api.GameHubProvider;
 import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
 import com.exorath.simpleapi.api.events.EventManager;
+import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplay;
+import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplayManager;
+import com.exorath.simpleapi.api.hub.serverlist.GameServerFilter;
 import com.exorath.simpleapi.impl.hub.serverdisplay.ServerDisplayManagerImpl;
 import com.exorath.simpleapi.impl.hub.serverlist.ServerListManagerImpl;
 import org.bukkit.Bukkit;
@@ -38,27 +41,40 @@ public abstract class Hub extends PrimaryModule {
     private World world;
     private YamlConfiguration worldConfig;
 
-    public Hub(){
+    public Hub() {
         this("world");
     }
 
-    public Hub(String worldName){
+    public Hub(String worldName) {
         loadWorld(worldName);
         SimpleAPI.getInstance().getManager(EventManager.class).protectWorld(world);
 
         SimpleAPI.getInstance().addManager(new ServerListManagerImpl());
         SimpleAPI.getInstance().addManager(new ServerDisplayManagerImpl(this));
     }
-    private void loadWorld(String worldName){
+
+    private void loadWorld(String worldName) {
         world = Bukkit.createWorld(WorldCreator.name(worldName));
         worldConfig = YamlConfiguration.loadConfiguration(new File(world.getWorldFolder(), "exorath.yml"));
+    }
+
+    /**
+     * Adds a filter that may be used by the already integrated game selector signs and NPCs (You can also add your own game selectors through the {@link com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplayManager}.
+     * Do not use isJoinable() or isPlayable() here.
+     *
+     * @param id     filter id to reference to this filter (fe. from the exorath.yml world file)
+     * @param filter filter to add
+     */
+
+    public void addFilter(String id, GameServerFilter filter) {
+        SimpleAPI.getInstance().getManager(ServerDisplayManager.class).addFilter(id, filter);
     }
 
     public World getHubWorld() {
         return world;
     }
 
-    public YamlConfiguration getWorldConfiguration(){
+    public YamlConfiguration getWorldConfiguration() {
         return worldConfig;
     }
 }

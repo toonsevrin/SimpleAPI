@@ -20,6 +20,9 @@ import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.hub.Hub;
 import com.exorath.simpleapi.api.manager.Manager;
 import com.exorath.simpleapi.api.module.Module;
+import com.exorath.simpleapi.api.player.GamePlayer;
+import com.exorath.simpleapi.impl.SimpleAPIImpl;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.List;
@@ -31,26 +34,32 @@ public interface SimpleAPI {
 
     /**
      * Returns the BungeeCord ID of this server. This is loaded once onEnable, if the BungeeCord name changes after that, it may break certain features.
+     *
      * @return the BungeeCord ID of this server
      */
     String getBungeeId();
 
     /**
      * Returns the registered game, or null if no game has been registered
+     *
      * @return the registered game
      */
     Game getGame();
+
     /**
      * Returns the registered hub, or null if no game has been registered
+     *
      * @return the registered hub
      */
     Hub getHub();
 
     /**
      * Returns the automatically registered {@link GameHubProvider}, or null if no {@link GameHubProvider} was registered.
+     *
      * @return the registered {@link GameHubProvider}, or null if no {@link GameHubProvider} was registered
      */
     GameHubProvider getGameHubProvider();
+
     /**
      * Gets a list of all registered Managers.
      *
@@ -101,27 +110,45 @@ public interface SimpleAPI {
 
     /**
      * Adds a runnable to the GameAPI that will surely be executed on disable. Useful for closing sockets.
+     *
      * @param runnable runnable that will be executed on disable
      */
     void addOnDisable(Runnable runnable);
 
     /**
      * Gets the plugin folder of the GameAPI, useful for reading config files.
+     *
      * @return the plugin folder of the GameAPI
      */
     File getDataFolder();
+
     /**
      * Logs a message with [SimpleAPI] [INFO] prefix to the console
+     *
      * @param message message to log
      */
     void log(String message);
+
     /**
      * Logs an error with [SimpleAPI] [ERROR] prefix to the console
+     *
      * @param error error to log
      */
     void logError(String error);
 
-    static SimpleAPI getInstance(){
-        return null;//TODO return implementation!!
+    /**
+     * Gets the GamePlayer instance of provided player. If no instance is found returns null.
+     *
+     * @param player player to get GamePlayer instance of
+     * @return GamePlayer attached to this player instance
+     */
+    GamePlayer getGamePlayer(Player player);
+
+    static SimpleAPI getInstance() {
+            return SimpleAPIImpl.getInstance();
+    }
+
+    static void connect(GamePlayer player, String server){
+
     }
 }

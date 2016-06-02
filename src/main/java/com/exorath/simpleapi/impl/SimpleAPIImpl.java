@@ -22,9 +22,14 @@ import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.hub.Hub;
 import com.exorath.simpleapi.api.manager.Manager;
 import com.exorath.simpleapi.api.module.Module;
+import com.exorath.simpleapi.api.player.GamePlayer;
+import com.exorath.simpleapi.api.player.PlayerManager;
 import com.exorath.simpleapi.impl.database.DBManager;
 import com.exorath.simpleapi.impl.events.EventManagerImpl;
+import com.exorath.simpleapi.impl.player.PlayerManagerImpl;
+import com.exorath.simpleapi.impl.redis.RedisManagerImpl;
 import com.google.common.collect.ImmutableList;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -46,7 +51,9 @@ public class SimpleAPIImpl extends JavaPlugin implements SimpleAPI {
     public void onEnable() {
         instance = this;
         addManager(new DBManager("mongodb"));
+        addManager(new RedisManagerImpl());
         addManager(new EventManagerImpl());
+        addManager(new PlayerManagerImpl());
     }
 
     @Override
@@ -130,6 +137,11 @@ public class SimpleAPIImpl extends JavaPlugin implements SimpleAPI {
     public void logError(String error) {
         error = error.replace("\n", "\n[GameAPI] [ERROR] ");
         System.err.println("[GameAPI] [ERROR] " + error);
+    }
+
+    @Override
+    public GamePlayer getGamePlayer(Player player) {
+        return getManager(PlayerManager.class).getPlayers().stream().filter(p -> p.bukkit().equals(player)).findFirst().orElse(null);
     }
 
     public static DBManager getDatabaseManager(){

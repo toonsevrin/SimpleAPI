@@ -25,11 +25,13 @@ import com.exorath.simpleapi.api.lib.VectorSerializer;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -93,9 +95,20 @@ public class ServerDisplayManagerImpl implements ServerDisplayManager, Listener 
             deregisterGameServer(event.getGameServer());
     }
 
+    /**
+     * Handle sign clicks.
+     */
+    @EventHandler
+    public void onSignClick(PlayerInteractEvent e){
+        if (e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof Sign)
+            for(ServerDisplay display : displays)
+                if(display instanceof SignDisplay)
+                    ((SignDisplay) display).clicked(SimpleAPI.getInstance().getGamePlayer(e.getPlayer()), e.getAction());
+    }
+
     public void registerGameServer(GameServer server) {
         for (ServerDisplay display : displays) {
-            if (filters.containsKey(display.getFilterId()) && filters.get(display.getFilterId()).allowed(server))
+            if (display.getFilterId() == null || (filters.containsKey(display.getFilterId()) && filters.get(display.getFilterId()).allowed(server)))
                 display.register(server);
             else
                 display.register(server);

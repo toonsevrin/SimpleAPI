@@ -59,7 +59,10 @@ public class DiscoveryManagerImpl implements DiscoveryManager{
 
     @Override
     public void sendGameDiscoveryMessage(){
-        SimpleAPI.getInstance().getManager(RedisManager.class).publish(SimpleAPI.getInstance().getGameHubProvider().getID(), getGameDiscoveryMessage().toString());
+        SimpleAPI.getInstance().getManager(RedisManager.class).publish(getChannel(), getGameDiscoveryMessage().toString());
+    }
+    private String getChannel(){
+        return SimpleAPI.getInstance().getGameHubProvider().getID();
     }
 
     public JsonObject getGameDiscoveryMessage(){
