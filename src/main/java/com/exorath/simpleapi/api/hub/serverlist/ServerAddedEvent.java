@@ -16,26 +16,39 @@
 
 package com.exorath.simpleapi.api.hub.serverlist;
 
+import com.exorath.simpleapi.api.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.Server;
+import com.exorath.simpleapi.api.serverlist.ServerListManager;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * This event is called just before a GameServer is removed from the hubs ServerListManager. Cancelling this event will prevent the GameServer from being removed to the {@link ServerListManager}.
+ * This event is called just before a GameServer is added to the hubs ServerListManager. Cancelling this event will prevent the GameServer from being added to the {@link ServerListManager}.
  * Created by Toon Sevrin on 5/22/2016.
  */
-public class GameServerRemovedEvent extends Event implements Cancellable, GameServerEvent {
+public class ServerAddedEvent extends Event implements Cancellable, GameServerEvent {
     private static final HandlerList handlerList = new HandlerList();
-    private GameServer gameServer;
+    private Server server;
+    private int expireAfter;
     private boolean cancelled = false;
 
-    public GameServerRemovedEvent(GameServer gameServer){
-        this.gameServer = gameServer;
+    public ServerAddedEvent(Server server, int expireAfter){
+        this.server = server;
+        this.expireAfter = expireAfter;
+    }
+
+    public int getExpireAfter() {
+        return expireAfter;
+    }
+
+    public void setExpireAfter(int expireAfter) {
+        this.expireAfter = expireAfter;
     }
 
     @Override
-    public GameServer getGameServer() {
-        return gameServer;
+    public Server getGameServer() {
+        return server;
     }
 
     @Override

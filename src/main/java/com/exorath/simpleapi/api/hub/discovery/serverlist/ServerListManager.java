@@ -14,21 +14,26 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.hub.serverlist;
+package com.exorath.simpleapi.api.hub.discovery.serverlist;
 
-import com.exorath.simpleapi.api.manager.Manager;
+import com.exorath.simpleapi.api.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.HubServer;
 
 import java.util.Collection;
 
 /**
- * The ServerListManager is responsible for listing the available game servers that serverlist to this hub.
- * Created by Toon Sevrin on 5/17/2016.
+ * Created by Toon Sevrin on 6/4/2016.
  */
-public interface ServerListManager extends Manager {
+public interface ServerListManager {
     /**
-     * Gets a list of all registered gameServers with this hub's GameID
-     * @return a list of all registered gameServers with this hub's GameID
+     * Gets a list of all registered gameServers with the GameID.
+     * @return a list of all registered gameServers with the GameID
      */
     Collection<GameServer> getGameServers();
 
+    /**
+     * Gets a list of all registered hubServers with the GameID.
+     * @return a list of all registered hubServers with the GameID
+     */
+    Collection<HubServer> getHubServers();
 }

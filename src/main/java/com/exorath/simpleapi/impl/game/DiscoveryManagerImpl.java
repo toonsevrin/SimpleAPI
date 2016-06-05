@@ -21,7 +21,7 @@ import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.game.discovery.DiscoveryManager;
 import com.exorath.simpleapi.api.redis.RedisManager;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
-import com.exorath.simpleapi.impl.hub.serverlist.GameServerImpl;
+import com.exorath.simpleapi.impl.serverlist.GameServerImpl;
 import com.exorath.simpleapi.impl.player.SerializedPlayerImpl;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.Validate;

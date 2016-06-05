@@ -20,17 +20,18 @@ import com.exorath.simpleapi.api.GameHubProvider;
 import com.exorath.simpleapi.api.PrimaryModule;
 import com.exorath.simpleapi.api.SimpleAPI;
 import com.exorath.simpleapi.api.events.EventManager;
-import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplay;
 import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplayManager;
 import com.exorath.simpleapi.api.hub.serverlist.GameServerFilter;
+import com.exorath.simpleapi.api.player.GamePlayer;
 import com.exorath.simpleapi.impl.hub.serverdisplay.ServerDisplayManagerImpl;
-import com.exorath.simpleapi.impl.hub.serverlist.ServerListManagerImpl;
+import com.exorath.simpleapi.impl.serverlist.ServerListManagerImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.Collection;
 
 
 /**
@@ -38,6 +39,7 @@ import java.io.File;
  * Created by Toon Sevrin on 5/15/2016.
  */
 public abstract class Hub extends PrimaryModule {
+    public static String HUB_SERVERS_PREFIX = "hubservers.";
     private World world;
     private YamlConfiguration worldConfig;
 
@@ -70,11 +72,40 @@ public abstract class Hub extends PrimaryModule {
         SimpleAPI.getInstance().getManager(ServerDisplayManager.class).addFilter(id, filter);
     }
 
+    /**
+     * True if this game can be joined (Regardless whether or not you will be playing after joining).
+     * @return true if this game can be joined
+     */
+    public boolean isJoinable(){
+        return Bukkit.getOnlinePlayers().size() < getMaxPlayers();
+    }
+
+    /**
+     * Gets the maximum amount of players allowed to play on this server. By default this calls {@link Bukkit#getMaxPlayers()}.
+     * @return allowed to play on this server
+     */
+    public int getMaxPlayers(){
+        return Bukkit.getMaxPlayers();
+    }
+
+    /**
+     * Gets the players playing on this server (Not spectating).
+     * @return the players playing on this server (Not spectating)
+     */
+    public abstract Collection<GamePlayer> getPlayers();
     public World getHubWorld() {
         return world;
     }
 
     public YamlConfiguration getWorldConfiguration() {
         return worldConfig;
+    }
+
+    /**
+     * Gets the redis channel where hubs of this GameHubProvider's ID publish their status to
+     * @return the redis channel where hubs of this GameHubProvider's ID publish their status to, or null if no GameHubProvider registered.
+     */
+    public static String getRedisHubDiscoveryChannel(){
+        return SimpleAPI.getInstance().getGameHubProvider() == null ? null : HUB_SERVERS_PREFIX + SimpleAPI.getInstance().getGameHubProvider().getID();
     }
 }

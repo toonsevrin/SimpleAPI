@@ -17,13 +17,33 @@
 package com.exorath.tdm.game;
 
 import com.exorath.simpleapi.api.game.minigame.Minigame;
+import com.exorath.simpleapi.api.player.GamePlayer;
+import org.bukkit.Location;
 
 /**
  * Created by Toon Sevrin on 5/25/2016.
  */
 public class TDMGame extends Minigame {
-    public TDMGame(){
-        super("Team Deathmatch");
+    public static String GAME_NAME = "Team Deathmatch";
+
+    public TDMGame() {
+        super(GAME_NAME);
     }
 
+
+    @Override
+    public void start() {
+        startPlayers();
+    }
+
+    /**
+     * Teleports players to their spawn lcoation and sends them a message that the game has started.
+     */
+    private void startPlayers(){
+        for (GamePlayer player : getPlayers()){
+            Location spawn = null;
+            player.bukkit().teleport(spawn);
+            player.bukkit().sendMessage("TDM has started.");
+        }
+    }
 }

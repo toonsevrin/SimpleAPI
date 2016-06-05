@@ -22,6 +22,8 @@ import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplay;
 import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplayManager;
 import com.exorath.simpleapi.api.hub.serverlist.*;
 import com.exorath.simpleapi.api.lib.VectorSerializer;
+import com.exorath.simpleapi.api.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.ServerListManager;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,13 +86,13 @@ public class ServerDisplayManagerImpl implements ServerDisplayManager, Listener 
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onServerAdd(GameServerAddedEvent event) {
+    public void onServerAdd(ServerAddedEvent event) {
         if (!event.isCancelled())
             registerGameServer(event.getGameServer());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onServerRemove(GameServerRemovedEvent event) {
+    public void onServerRemove(ServerRemovedEvent event) {
         if (!event.isCancelled())
             deregisterGameServer(event.getGameServer());
     }

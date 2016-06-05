@@ -16,6 +16,8 @@
 
 package com.exorath.simpleapi.api.hub.serverlist;
 
+import com.exorath.simpleapi.api.serverlist.GameServer;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

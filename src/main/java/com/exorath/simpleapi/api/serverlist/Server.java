@@ -14,25 +14,27 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.hub.discovery.serverlist;
+package com.exorath.simpleapi.api.serverlist;
 
 import com.exorath.simpleapi.api.player.SerializedPlayer;
+import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
 
 import java.util.Collection;
 
 /**
- * Created by Toon Sevrin on 6/2/2016.
+ * Created by Toon Sevrin on 6/4/2016.
  */
-public interface HubServer {
+public interface Server {
     /**
-     * Gets the bungeecord id of this hub server (The server name used to connect players to this hub server)
+     * Gets the bungeecord id of this game server (The server name used to connect players to this game server)
      *
-     * @return the bungeecord id of this hub server
+     * @return the bungeecord id of this game server
      */
     String getBungeeName();
 
     /**
-     * True if players should be able to join this server (False if full)
+     * True if players should be able to join this server (Can be as spectator or as player)
      *
      * @return true if players should be able to join this server
      */
@@ -43,7 +45,9 @@ public interface HubServer {
      *
      * @return the maximum amount of players allowed on this hub server
      */
-    int getMaxPlayerAmount();
+     default int getMaxPlayerAmount(){
+         return Bukkit.getMaxPlayers();
+     }
 
     /**
      * Gets the amount of players that are on this hub server
@@ -51,7 +55,6 @@ public interface HubServer {
      * @return the amount of players that are on this hub server
      */
     int getPlayerAmount();
-
 
     /**
      * Gets a list of all players on this server
@@ -61,8 +64,9 @@ public interface HubServer {
     Collection<SerializedPlayer> getPlayers();
 
     /**
-     * Serializes this object to a string which can be send over redis.
-     * @return serialized string of this object
+     * Serializes this object to an {@link JsonObject} which can be send over redis.
+     * @return serialized {@link JsonObject} of this object
      */
-    String serialize();
+    JsonObject serialize();
+
 }

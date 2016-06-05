@@ -14,15 +14,18 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.impl.hub.serverlist;
+package com.exorath.simpleapi.impl.serverlist;
 
 import com.exorath.simpleapi.api.game.Game;
 import com.exorath.simpleapi.api.game.minigame.Minigame;
-import com.exorath.simpleapi.api.hub.serverlist.GameServer;
-import com.exorath.simpleapi.api.hub.serverlist.GameServerAddedEvent;
-import com.exorath.simpleapi.api.hub.serverlist.GameServerRemovedEvent;
-import com.exorath.simpleapi.api.hub.serverlist.ServerListManager;
+import com.exorath.simpleapi.api.hub.Hub;
+import com.exorath.simpleapi.api.serverlist.GameServer;
+import com.exorath.simpleapi.api.hub.serverlist.ServerAddedEvent;
+import com.exorath.simpleapi.api.hub.serverlist.ServerRemovedEvent;
 import com.exorath.simpleapi.api.redis.RedisSubscriber;
+import com.exorath.simpleapi.api.serverlist.HubServer;
+import com.exorath.simpleapi.api.serverlist.Server;
+import com.exorath.simpleapi.api.serverlist.ServerListManager;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -31,13 +34,15 @@ import org.bukkit.Bukkit;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This manager listens for Game Discovery Messages. See https://github.com/stink123456/SimpleAPI/wiki/Game-discovery for more info.
  * Created by Toon Sevrin on 5/17/2016.
  */
 public class ServerListManagerImpl extends RedisSubscriber implements ServerListManager {
-    private HashMap<String, GameServer> gameServersById = new HashMap<>();
+    private HashMap<String, Server> serversById = new HashMap<>();
     private HashMap<String, Integer> serverExpiryById = new HashMap<>();
 
 
@@ -47,12 +52,15 @@ public class ServerListManagerImpl extends RedisSubscriber implements ServerList
 
     @Override
     public void onMessage(String channel, String message) {
-        if (channel.equals(Minigame.getRedisGameDiscoveryChannel()))
+        if (channel.equals(Game.getRedisGameDiscoveryChannel()))
             handleGameDiscoveryMessage(new JsonParser().parse(message).getAsJsonObject());
+        else if (channel.equals(Hub.getRedisHubDiscoveryChannel()))
+            handleHubDiscoveryMessage(new JsonParser().parse(message).getAsJsonObject());
     }
 
     /**
      * This is called when a Game-Discovery-Message is received through redis. It will add the game and update the expiry scheduler.
+     *
      * @param message the Game-Discovery-Message
      */
     public void handleGameDiscoveryMessage(JsonObject message) {
@@ -60,18 +68,38 @@ public class ServerListManagerImpl extends RedisSubscriber implements ServerList
 
         GameServer gameServer = GameServerImpl.deserialize(message.get("gameserver").getAsJsonObject());
 
-        GameServerAddedEvent event = new GameServerAddedEvent(gameServer, message.get("expire").getAsInt());
+        ServerAddedEvent event = new ServerAddedEvent(gameServer, message.get("expire").getAsInt());
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled())
             return;
 
-        gameServersById.put(gameServer.getBungeeName(), gameServer);
+        serversById.put(gameServer.getBungeeName(), gameServer);
+        handleExpiry(gameServer.getBungeeName(), event.getExpireAfter());
+    }
+
+    /**
+     * This is called when a Hub-Discovery-Message is received through redis. It will add the hub and update the expiry scheduler.
+     *
+     * @param message the Hub-Discovery-Message
+     */
+    public void handleHubDiscoveryMessage(JsonObject message) {
+        Validate.isTrue(validateGameDiscoveryMessage(message), "SimpleAPI received a non-valid Hub-Discovery-Message over the channel: " + Minigame.getRedisGameDiscoveryChannel());
+
+        GameServer gameServer = GameServerImpl.deserialize(message.get("gameserver").getAsJsonObject());
+
+        ServerAddedEvent event = new ServerAddedEvent(gameServer, message.get("expire").getAsInt());
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled())
+            return;
+
+        serversById.put(gameServer.getBungeeName(), gameServer);
         handleExpiry(gameServer.getBungeeName(), event.getExpireAfter());
     }
 
     /**
      * Updates the expiry scheduler with the new expiration time.
-     * @param bungeeId GameServerId to update expiration time of
+     *
+     * @param bungeeId         GameServerId to update expiration time of
      * @param expireAfterTicks after this time expires, the server will be removed if it has not been re-registered through the redis message
      */
     public void handleExpiry(String bungeeId, int expireAfterTicks) {
@@ -83,24 +111,26 @@ public class ServerListManagerImpl extends RedisSubscriber implements ServerList
 
     /**
      * Gets a {@link Runnable} that calls a GameServerRemoveEvent and removes the server with bungeeId from the list.
+     *
      * @param bungeeId id of {@link GameServer} that should be remove
      * @return a {@link Runnable} that calls a GameServerRemoveEvent and removes the server with bungeeId from the list
      */
     public Runnable getOnExpire(String bungeeId) {
         return () -> {
-            if (gameServersById.containsKey(bungeeId)) {
-                GameServerRemovedEvent removedEvent = new GameServerRemovedEvent(gameServersById.get(bungeeId));
+            if (serversById.containsKey(bungeeId)) {
+                ServerRemovedEvent removedEvent = new ServerRemovedEvent(serversById.get(bungeeId));
                 Bukkit.getPluginManager().callEvent(removedEvent);
-                if(removedEvent.isCancelled())
+                if (removedEvent.isCancelled())
                     return;
             }
-            gameServersById.remove(bungeeId);
+            serversById.remove(bungeeId);
             serverExpiryById.remove(bungeeId);
         };
     }
 
     /**
      * Validates whether or not the provided Game-Discovery-Message is valid (Contains required keys).
+     *
      * @param message Game-Discovery-Message to validate
      * @return true if the message is valid
      */
@@ -108,8 +138,31 @@ public class ServerListManagerImpl extends RedisSubscriber implements ServerList
         return message.has("expire") && message.has("gameserver") && GameServerImpl.canDeserialize(message.get("gameserver").getAsJsonObject());
     }
 
+    /**
+     * Validates whether or not the provided Hub-Discovery-Message is valid (Contains required keys).
+     *
+     * @param message Game-Discovery-Message to validate
+     * @return true if the message is valid
+     */
+    private static boolean validateHubDiscoveryMessage(JsonObject message) {
+        return message.has("expire") && message.has("hubserver") && GameServerImpl.canDeserialize(message.get("hubserver").getAsJsonObject());
+    }
+
     @Override
     public Collection<GameServer> getGameServers() {
-        return gameServersById.values();
+        return getServers(GameServer.class);
+    }
+
+    @Override
+    public Collection<HubServer> getHubServers() {
+       return getServers(HubServer.class);
+    }
+
+    private <T extends Server> Collection<T> getServers(Class<T> type) {
+        Set<T> servers = new HashSet<>();
+        serversById.values().stream()
+                .filter(s -> type.isAssignableFrom(s.getClass()))
+                .forEach(s -> servers.add((T) s));
+        return servers;
     }
 }

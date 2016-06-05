@@ -14,18 +14,12 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.api.hub.serverlist;
+package com.exorath.simpleapi.api.serverlist;
 
-
-import com.exorath.simpleapi.api.serverlist.Server;
 
 /**
- * Created by Toon Sevrin on 5/22/2016.
+ * Created by Toon Sevrin on 6/2/2016.
  */
-public interface GameServerEvent {
-    /**
-     * Gets the Server this event applies to.
-     * @return the Server this event applies to
-     */
-    Server getGameServer();
+public interface HubServer extends Server{
+
 }

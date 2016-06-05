@@ -18,7 +18,7 @@ package com.exorath.simpleapi.impl.hub.serverdisplay;
 
 import com.exorath.simpleapi.api.SimpleAPI;
 import com.exorath.simpleapi.api.hub.serverdisplay.ServerDisplay;
-import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.GameServer;
 import com.exorath.simpleapi.api.player.GamePlayer;
 import com.sun.javafx.binding.StringFormatter;
 import net.md_5.bungee.api.ChatColor;

@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.exorath.simpleapi.impl.hub.serverlist;
+package com.exorath.simpleapi.impl.serverlist;
 
-import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.GameServer;
 import com.exorath.simpleapi.api.player.SerializedPlayer;
 import com.exorath.simpleapi.impl.player.SerializedPlayerImpl;
 import com.google.gson.JsonArray;

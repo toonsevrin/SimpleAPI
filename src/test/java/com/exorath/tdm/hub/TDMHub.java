@@ -17,7 +17,7 @@
 package com.exorath.tdm.hub;
 
 import com.exorath.simpleapi.api.hub.Hub;
-import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.GameServer;
 import com.exorath.simpleapi.api.hub.serverlist.GameServerFilter;
 
 import java.util.ArrayList;

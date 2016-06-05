@@ -21,7 +21,10 @@ import com.exorath.simpleapi.api.hub.Hub;
 import com.exorath.simpleapi.api.hub.discovery.DiscoveryManager;
 import com.exorath.simpleapi.api.redis.RedisManager;
 import com.exorath.simpleapi.impl.SimpleAPIImpl;
+import com.exorath.simpleapi.impl.hub.discovery.serverlist.HubServerImpl;
+import com.exorath.simpleapi.impl.player.SerializedPlayerImpl;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 
 /**
@@ -52,7 +55,16 @@ public class DiscoveryManagerImpl implements DiscoveryManager {
     public JsonObject getHubDiscoveryMessage(){
         JsonObject message = new JsonObject();
         message.addProperty("expire", expireTime);
-        message.add("hubserver", getGameServer().serializeToJson());
+        message.add("hubserver", getHubServer().serializeToJson());
         return message;
+    }
+
+    public HubServerImpl getHubServer(){
+        Validate.notNull(SimpleAPI.getInstance().getBungeeId(), "Failed to load bungeeId.");
+
+        HubServerImpl hubServer = new HubServerImpl(SimpleAPI.getInstance().getBungeeId(), hub.isJoinable(), hub.getMaxPlayers());
+        hub.getPlayers().forEach(gp -> hubServer.getPlayers().add(SerializedPlayerImpl.deserialize(gp)));
+
+        return hubServer;
     }
 }

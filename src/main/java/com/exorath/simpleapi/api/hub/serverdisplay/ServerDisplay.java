@@ -16,7 +16,7 @@
 
 package com.exorath.simpleapi.api.hub.serverdisplay;
 
-import com.exorath.simpleapi.api.hub.serverlist.GameServer;
+import com.exorath.simpleapi.api.serverlist.GameServer;
 
 /**
  * Interface extended by ServerSignDisplay and ServerNpcDisplay. You can create your own server displays as well.
